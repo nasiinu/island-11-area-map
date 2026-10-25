@@ -1,60 +1,52 @@
 <!doctype html>
-<html lang="ja">
-<head>
+<html lang="ja"><head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>無人島11エリア｜接続マップ・移動抽選</title>
   <style>
-    :root{--bg:#071411;--panel:#10231f;--panel2:#142d28;--ink:#edf8f2;--muted:#a9c1b8;--line:#6d8d83;--active:#ffe090;--sea:#82d9f4;--forest:#8cdaa0;--building:#d8c5a0;--open:#d7bd86;--tower:#d7b4f5}
-    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 50% 0,#18352d 0,var(--bg) 62%);color:var(--ink);font-family:"Yu Gothic UI","Noto Sans JP",system-ui,sans-serif;min-height:100vh}
-    main{width:min(1180px,100%);margin:auto;padding:20px}.head{display:flex;gap:16px;align-items:end;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
-    h1{font-size:clamp(20px,3vw,32px);margin:0}.lead{color:var(--muted);margin:6px 0 0;font-size:14px}.actions{display:flex;gap:8px;flex-wrap:wrap}
-    button{border:1px solid #42655b;background:#18372f;color:var(--ink);padding:9px 14px;border-radius:10px;cursor:pointer;font:inherit;font-weight:700}button:hover,button:focus-visible{border-color:var(--active);outline:none}.primary{background:#745b1c;border-color:#caa84e}
-    .grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:14px}.map-card,.info{background:color-mix(in srgb,var(--panel) 92%,transparent);border:1px solid #29483f;border-radius:16px;box-shadow:0 14px 40px #0008}
-    .map-card{position:relative;overflow:hidden;min-height:620px}.map-card:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 52%,#234d3f 0,#183b32 40%,#0a2624 70%,#0b2637 100%);opacity:.9}
-    svg{position:relative;display:block;width:100%;height:620px}.route{stroke:var(--line);stroke-width:3;opacity:.72;transition:.18s;vector-effect:non-scaling-stroke}.route.active{stroke:var(--active);stroke-width:6;opacity:1}.route.dim{opacity:.14}
-    .node{cursor:pointer}.node circle{stroke:#06100e;stroke-width:4;filter:drop-shadow(0 5px 5px #0009);transition:.18s}.node text{fill:#071411;font-size:17px;font-weight:900;text-anchor:middle;pointer-events:none}.node:hover circle,.node:focus circle,.node.selected circle{stroke:var(--active);stroke-width:7}.node.dim{opacity:.38}.beach circle{fill:var(--sea)}.forest circle{fill:var(--forest)}.building circle{fill:var(--building)}.open circle{fill:var(--open)}.tower circle{fill:var(--tower)}
-    .info{padding:18px;min-height:620px}#placeName{font-size:26px;margin:0 0 8px}.tag{display:inline-block;border:1px solid #4e7569;border-radius:99px;padding:3px 9px;color:#c8ded6;font-size:12px;margin-bottom:14px}.info h3{font-size:14px;color:var(--muted);margin:18px 0 8px}.neighbors{display:flex;flex-wrap:wrap;gap:7px}.neighbor{background:#1a3931;border:1px solid #4b7065;border-radius:9px;padding:6px 9px;font-size:13px}.result{min-height:86px;margin-top:10px;padding:14px;border-radius:12px;background:#091915;border:1px solid #29483f;display:grid;place-items:center;text-align:center}.result strong{display:block;color:var(--active);font-size:23px;margin-top:4px}.legend{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;color:var(--muted);font-size:12px}.legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;background:var(--c)}.note{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.7}
-    @media(max-width:800px){main{padding:10px}.grid{grid-template-columns:1fr}.map-card{min-height:auto}svg{height:auto;aspect-ratio:9/10}.info{min-height:auto}.node text{font-size:15px}.route{stroke-width:2.5}}
-    @media(prefers-reduced-motion:no-preference){.result.roll strong{animation:pop .35s ease}@keyframes pop{50%{transform:scale(1.12)}}}
+    :root{--bg:#070b11;--node:#293240;--line:#505866;--blue:#3b8cff;--cyan:#22d6c4;--ink:#f5f8fc;--muted:#aeb8c7}
+    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Yu Gothic UI","Noto Sans JP",system-ui,sans-serif}
+    main{height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);padding:6px}
+    header{height:36px;display:flex;align-items:center;gap:8px;padding:0 5px;z-index:2}
+    h1{font-size:15px;line-height:1;margin:0;white-space:nowrap}.status{min-width:0;margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.status strong{color:var(--cyan)}
+    .actions{display:flex;gap:5px}button{border:1px solid #3e4b5e;background:#151c26;color:var(--ink);border-radius:7px;padding:5px 9px;font:700 11px inherit;cursor:pointer;white-space:nowrap}button:hover,button:focus-visible{border-color:var(--cyan);outline:none}.primary{background:#124841;border-color:#258c81}
+    .map{position:relative;min-height:0;overflow:hidden;border:1px solid #1e2733;border-radius:10px;background:radial-gradient(circle at 50% 45%,#111925 0,var(--bg) 68%)}
+    svg{display:block;width:100%;height:100%}.route{stroke:var(--line);stroke-width:3;opacity:.78;vector-effect:non-scaling-stroke;transition:.15s}.route.active{stroke:var(--cyan);stroke-width:5;opacity:1}.route.dim{opacity:.14}
+    .node{cursor:pointer;transition:.15s}.node circle{fill:var(--node);stroke:var(--blue);stroke-width:3;vector-effect:non-scaling-stroke}.node text{fill:var(--ink);font-size:18px;font-weight:900;text-anchor:middle;dominant-baseline:central;pointer-events:none}.node.selected circle{fill:#16998e;stroke:#5ce6d9;stroke-width:5}.node:hover circle,.node:focus circle{stroke:var(--cyan);stroke-width:5}.node:focus{outline:none}.node.dim{opacity:.42}
+    @media(max-width:640px){main{padding:3px}header{height:32px}h1{font-size:12px}.status{font-size:10px}button{padding:4px 6px;font-size:10px}.node text{font-size:17px}}
+    @media(max-height:360px){header{height:29px}h1{font-size:11px}.status{font-size:9px}button{padding:3px 6px;font-size:9px}.map{border-radius:7px}}
   </style>
 </head>
 <body>
 <main>
-  <div class="head"><div><h1>無人島11エリア 接続マップ</h1><p class="lead">エリアを選択すると隣接経路を強調表示。移動抽選には「その場に留まる」も含まれます。</p></div><div class="actions"><button id="reset">全経路を表示</button><button id="roll" class="primary">選択エリアから移動抽選</button></div></div>
-  <div class="grid">
-    <section class="map-card" aria-label="無人島の接続図">
-      <svg viewBox="0 0 900 620" role="img" aria-labelledby="mapTitle mapDesc">
-        <title id="mapTitle">無人島11エリアの双方向接続マップ</title><desc id="mapDesc">各エリアをクリックすると隣接エリアが強調されます。</desc>
-        <g id="routes"></g><g id="nodes"></g>
-      </svg>
-    </section>
-    <aside class="info" aria-live="polite">
-      <div class="tag">双方向移動</div><h2 id="placeName">浜辺1</h2><div id="placeKind"></div>
-      <h3>直接移動できるエリア</h3><div id="neighbors" class="neighbors"></div>
-      <h3>移動抽選</h3><div id="odds"></div><div id="result" class="result">上のボタンで抽選できます</div>
-      <p class="note">経路の途中に別エリアがある場合は、原則としてそのエリアを経由します。1フェーズにつき基本1区画です。</p>
-    </aside>
-  </div>
-  <div class="legend"><span style="--c:var(--sea)">浜辺</span><span style="--c:var(--forest)">森</span><span style="--c:var(--building)">建物</span><span style="--c:var(--open)">空き地</span><span style="--c:var(--tower)">展望台</span></div>
+  <header>
+    <h1>無人島11エリア</h1>
+    <div id="status" class="status" aria-live="polite">森2｜接続 4｜1D5</div>
+    <div class="actions"><button id="reset">全経路</button><button id="roll" class="primary">移動抽選</button></div>
+  </header>
+  <section class="map" aria-label="無人島11エリアの双方向接続マップ">
+    <svg viewBox="0 0 900 700" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="mapTitle mapDesc">
+      <title id="mapTitle">無人島11エリア接続マップ</title><desc id="mapDesc">エリアを選ぶと直接移動できる経路が強調されます。</desc>
+      <g id="routes"></g><g id="nodes"></g></svg>
+  </section>
 </main>
 <script>
 const areas={
-  "展望台":{x:125,y:205,type:"tower",kind:"西側の山上"},"浜辺1":{x:280,y:85,type:"beach",kind:"北西の海岸"},"森1":{x:370,y:230,type:"forest",kind:"比較的浅い森林"},
-  "建物1":{x:245,y:365,type:"building",kind:"島内最大の施設"},"浜辺2":{x:120,y:505,type:"beach",kind:"南西の海岸"},"建物2":{x:455,y:440,type:"building",kind:"島内で二番目に大きい施設"},
-  "空き地1":{x:310,y:555,type:"open",kind:"廃墟・身を隠せる場所"},"空き地2":{x:590,y:190,type:"open",kind:"森2の上側付近"},"森2":{x:640,y:350,type:"forest",kind:"洞窟のある森林"},
-  "森3":{x:785,y:205,type:"forest",kind:"山に近い深い森林"},"浜辺3":{x:785,y:490,type:"beach",kind:"崖のある東側海岸"}
+  "展望台":{x:115,y:220},"浜辺1":{x:240,y:70},"森1":{x:315,y:230},"建物1":{x:300,y:390},"浜辺2":{x:255,y:600},
+  "建物2":{x:500,y:480},"空き地1":{x:625,y:620},"森2":{x:600,y:330},"空き地2":{x:560,y:165},"森3":{x:735,y:80},"浜辺3":{x:760,y:475}
 };
 const edges=[["展望台","浜辺1"],["展望台","森1"],["展望台","建物1"],["浜辺1","森1"],["浜辺1","建物1"],["森1","建物1"],["森1","空き地2"],["建物1","浜辺2"],["建物1","建物2"],["浜辺2","建物2"],["浜辺2","空き地1"],["建物2","浜辺3"],["建物2","森2"],["建物2","空き地1"],["森2","空き地2"],["森2","森3"],["森2","浜辺3"],["空き地2","森3"]];
 const neighbors=Object.fromEntries(Object.keys(areas).map(n=>[n,[]]));edges.forEach(([a,b])=>{neighbors[a].push(b);neighbors[b].push(a)});
-const svgNS="http://www.w3.org/2000/svg",routes=document.querySelector("#routes"),nodes=document.querySelector("#nodes");
-edges.forEach(([a,b])=>{const e=document.createElementNS(svgNS,"line"),A=areas[a],B=areas[b];e.setAttribute("x1",A.x);e.setAttribute("y1",A.y);e.setAttribute("x2",B.x);e.setAttribute("y2",B.y);e.classList.add("route");e.dataset.a=a;e.dataset.b=b;routes.append(e)});
-Object.entries(areas).forEach(([name,a])=>{const g=document.createElementNS(svgNS,"g");g.classList.add("node",a.type);g.dataset.name=name;g.setAttribute("tabindex","0");g.setAttribute("role","button");g.setAttribute("aria-label",name+"を選択");g.setAttribute("transform",`translate(${a.x} ${a.y})`);const c=document.createElementNS(svgNS,"circle");c.setAttribute("r",name.length>3?49:44);const t=document.createElementNS(svgNS,"text");t.setAttribute("dy",".35em");t.textContent=name;g.append(c,t);g.addEventListener("click",()=>select(name));g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(name)}});nodes.append(g)});
-let selected="浜辺1";
-function select(name){selected=name;document.querySelector("#placeName").textContent=name;document.querySelector("#placeKind").textContent=areas[name].kind;document.querySelector("#neighbors").innerHTML=neighbors[name].map(n=>`<button class="neighbor" data-go="${n}">${n}</button>`).join("");document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go));document.querySelector("#odds").textContent=`1D${neighbors[name].length+1}（移動先 ${neighbors[name].length}＋留まる）`;document.querySelector("#result").className="result";document.querySelector("#result").textContent="上のボタンで抽選できます";document.querySelectorAll(".node").forEach(n=>{n.classList.toggle("selected",n.dataset.name===name);n.classList.toggle("dim",n.dataset.name!==name&&!neighbors[name].includes(n.dataset.name))});document.querySelectorAll(".route").forEach(r=>{const on=r.dataset.a===name||r.dataset.b===name;r.classList.toggle("active",on);r.classList.toggle("dim",!on)})}
-document.querySelector("#roll").onclick=()=>{const choices=[...neighbors[selected],selected+"に留まる"],pick=choices[Math.floor(Math.random()*choices.length)],box=document.querySelector("#result");box.className="result";void box.offsetWidth;box.className="result roll";box.innerHTML=`抽選結果<strong>${pick}</strong>`};
-document.querySelector("#reset").onclick=()=>{document.querySelectorAll(".node,.route").forEach(e=>e.classList.remove("selected","active","dim"));document.querySelector("#result").textContent="エリアを選択してください"};select(selected);
+const ns="http://www.w3.org/2000/svg",routes=document.querySelector("#routes"),nodes=document.querySelector("#nodes"),status=document.querySelector("#status");
+edges.forEach(([a,b])=>{const A=areas[a],B=areas[b],e=document.createElementNS(ns,"line");for(const [k,v] of Object.entries({x1:A.x,y1:A.y,x2:B.x,y2:B.y}))e.setAttribute(k,v);e.classList.add("route");e.dataset.a=a;e.dataset.b=b;routes.append(e)});
+Object.entries(areas).forEach(([name,p])=>{const g=document.createElementNS(ns,"g"),c=document.createElementNS(ns,"circle"),t=document.createElementNS(ns,"text");g.classList.add("node");g.dataset.name=name;g.setAttribute("transform",`translate(${p.x} ${p.y})`);g.setAttribute("tabindex","0");g.setAttribute("role","button");g.setAttribute("aria-label",name+"を選択");c.setAttribute("r",45);t.textContent=name;g.append(c,t);g.onclick=()=>select(name);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(name)}};nodes.append(g)});
+let selected="森2";
+function select(name){selected=name;const near=neighbors[name];status.innerHTML=`<strong>${name}</strong>｜接続 ${near.length}｜1D${near.length+1}`;document.querySelectorAll(".node").forEach(n=>{n.classList.toggle("selected",n.dataset.name===name);n.classList.toggle("dim",n.dataset.name!==name&&!near.includes(n.dataset.name))});document.querySelectorAll(".route").forEach(r=>{const on=r.dataset.a===name||r.dataset.b===name;r.classList.toggle("active",on);r.classList.toggle("dim",!on)})}
+document.querySelector("#roll").onclick=()=>{const list=[...neighbors[selected],selected+"に留まる"],pick=list[Math.floor(Math.random()*list.length)];status.innerHTML=`${selected} → <strong>${pick}</strong>（1D${list.length}）`};
+document.querySelector("#reset").onclick=()=>{document.querySelectorAll(".node,.route").forEach(e=>e.classList.remove("selected","active","dim"));status.textContent="全18経路を表示"};select(selected);
 </script>
+
+
 </body>
 </html>
